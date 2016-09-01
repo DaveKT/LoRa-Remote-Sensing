@@ -1,14 +1,11 @@
 /*
 * Author: David Kolet-Tassara
 * Date:   September 1, 2016
-* Rev:    1.0
+* Rev:    0.2
 * Description:
-*   This sketch uses the RadioHead library to send beacon messages via the
+*   This sketch uses the RadioHead library to send WX beacon messages via the
 *   Adafruit Feather MO with RFM95 LoRa Radio. More information on the radio may
 *   be found here: https://www.adafruit.com/product/3178
-* Part List:
-*   Adafruit Feather MO with RFM95 LoRa Radio
-*   3" Wire Strand (for whip antenna)
 * Attribution:
 *   Parts of the code were taken from the tutorial for the RFM9x LoRa Packet Radio
 *   written by Limor Fried (ladyada).
@@ -32,8 +29,8 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 int tempPin = 0; //taking our temp readings from A0
 
 //Global Variables
-String message = "Feather Beacon - TEST";
-String stationID = "1";
+String message = "";
+String StationID = "1";
 int tempReading;
 
 void setup() {
@@ -59,8 +56,6 @@ void setup() {
   
   rf95.setTxPower(RF95_PWR, false);
 
-    analogReference(EXTERNAL);
-
   for(int i=0; i < 5; i++) {
     digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);              // wait for a second
@@ -71,6 +66,15 @@ void setup() {
 }
 
 void loop() {
+
+    //get temperature reading
+    float voltage = analogRead(tempPin) * 3.3;
+    voltage /= 1024.0;
+    float tempC = (voltage - 0.5) * 100;
+    float tempF = (tempC * 9.0 / 5.0) + 32.0;
+
+    //build the data message (csv)
+    message = StationID+", "+String(tempC, 1)+", "+String(tempF, 1);
      
     //explode string to char array for sending
     int messageSize = message.length()+1;
