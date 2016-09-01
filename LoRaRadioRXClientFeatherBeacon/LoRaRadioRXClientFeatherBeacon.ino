@@ -26,7 +26,7 @@
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 //TMP36 Settings
-int tempPin = 0; //taking our temp readings from A0
+int tempPin = 1; //taking our temp readings from A0
 
 //Global Variables
 String message = "";
